@@ -164,6 +164,30 @@ define Device/alfa-network_ap120c-ac
 endef
 TARGET_DEVICES += alfa-network_ap120c-ac
 
+define Device/alibaba_ap4220
+	$(call Device/FitImage)
+	$(call Device/UbiFit)
+	DEVICE_VENDOR := Alibaba
+	DEVICE_MODEL := AP4220
+	SOC := qcom-ipq4018
+	KERNEL_SIZE := 4096k
+	BLOCKSIZE := 128k
+	PAGESIZE := 2048
+	DEVICE_PACKAGES += ipq-wifi-alibaba_ap4220
+endef
+
+define Device/alibaba_ap4220-48m
+	$(call Device/alibaba_ap4220)
+	DEVICE_VARIANT := 48M
+endef
+TARGET_DEVICES += alibaba_ap4220-48m
+
+define Device/alibaba_ap4220-128m
+	$(call Device/alibaba_ap4220)
+	DEVICE_VARIANT := 128M
+endef
+TARGET_DEVICES += alibaba_ap4220-128m
+
 define Device/aruba_glenmorangie
 	$(call Device/FitImageLzma)
 	DEVICE_VENDOR := Aruba
@@ -972,6 +996,20 @@ define Device/tel_x1pro
 	DEFAULT := n
 endef
 TARGET_DEVICES += tel_x1pro
+
+define Device/thinkplus_fogpod800
+	$(call Device/FitImage)
+	$(call Device/UbiFit)
+	DEVICE_VENDOR := ThinkPlus
+	DEVICE_MODEL := FogPOD800
+	SOC := qcom-ipq4028
+	KERNEL_SIZE := 4096k
+	DEVICE_DTS_CONFIG := config@ap.dk01.1-c2
+	BLOCKSIZE := 128k
+	PAGESIZE := 2048
+	DEVICE_PACKAGES := kmod-usb-ledtrig-usbport ipq-wifi-thinkplus_fogpod800
+endef
+TARGET_DEVICES += thinkplus_fogpod800
 
 define Device/unielec_u4019-32m
 	$(call Device/FitImage)

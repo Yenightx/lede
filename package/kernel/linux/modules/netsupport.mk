@@ -911,7 +911,7 @@ $(eval $(call KernelPackage,sched-ipset))
 define KernelPackage/sched-mqprio-common
   SUBMENU:=$(NETWORK_SUPPORT_MENU)
   TITLE:=mqprio queue common dependencies support
-  DEPENDS:=@LINUX_6_6
+  DEPENDS:=@LINUX_6_6||LINUX_6_12
   HIDDEN:=1
   KCONFIG:=CONFIG_NET_SCH_MQPRIO_LIB
   FILES:=$(LINUX_DIR)/net/sched/sch_mqprio_lib.ko
@@ -927,7 +927,7 @@ $(eval $(call KernelPackage,sched-mqprio-common))
 define KernelPackage/sched-mqprio
   SUBMENU:=$(NETWORK_SUPPORT_MENU)
   TITLE:=Multi-queue priority scheduler (MQPRIO)
-  DEPENDS:=+kmod-sched-core +LINUX_6_6:kmod-sched-mqprio-common
+  DEPENDS:=+kmod-sched-core +(LINUX_6_6||LINUX_6_12):kmod-sched-mqprio-common
   KCONFIG:=CONFIG_NET_SCH_MQPRIO
   FILES:=$(LINUX_DIR)/net/sched/sch_mqprio.ko
   AUTOLOAD:=$(call AutoProbe, sch_mqprio)
@@ -1340,6 +1340,7 @@ $(eval $(call KernelPackage,mpls))
 define KernelPackage/9pnet
   SUBMENU:=$(NETWORK_SUPPORT_MENU)
   TITLE:=Plan 9 Resource Sharing Support (9P2000)
+  DEPENDS:=+!LINUX_6_6:kmod-fs-netfs
   KCONFIG:= \
 	CONFIG_NET_9P \
 	CONFIG_NET_9P_DEBUG=n \
@@ -1477,6 +1478,23 @@ endef
 $(eval $(call KernelPackage,inet-diag))
 
 
+define KernelPackage/inet-mptcp-diag
+  SUBMENU:=$(NETWORK_SUPPORT_MENU)
+  TITLE:=INET diag support for MultiPath TCP
+  DEPENDS:=@KERNEL_MPTCP +kmod-inet-diag
+  KCONFIG:=CONFIG_INET_MPTCP_DIAG
+  FILES:=$(LINUX_DIR)/net/mptcp/mptcp_diag.ko
+  AUTOLOAD:=$(call AutoProbe,mptcp_diag)
+endef
+
+define KernelPackage/inet-mptcp-diag/description
+Support for INET (MultiPath TCP) socket monitoring interface used by
+native Linux tools such as ss.
+endef
+
+$(eval $(call KernelPackage,inet-mptcp-diag))
+
+
 define KernelPackage/xdp-sockets-diag
   SUBMENU:=$(NETWORK_SUPPORT_MENU)
   TITLE:=PF_XDP sockets monitoring interface support for ss utility
@@ -1597,3 +1615,68 @@ define KernelPackage/qrtr-mhi/description
 endef
 
 $(eval $(call KernelPackage,qrtr-mhi))
+
+define KernelPackage/team
+  SUBMENU:=$(NETWORK_SUPPORT_MENU)
+  TITLE:=Ethernet team driver
+  KCONFIG:=CONFIG_NET_TEAM
+  FILES:=$(LINUX_DIR)/drivers/net/team/team.ko
+  AUTOLOAD:=$(call AutoProbe,team)
+endef
+
+$(eval $(call KernelPackage,team))
+
+define KernelPackage/team-mode-broadcast
+  SUBMENU:=$(NETWORK_SUPPORT_MENU)
+  TITLE:=Broadcast mode support
+  DEPENDS:=kmod-team
+  KCONFIG:=CONFIG_NET_TEAM_MODE_BROADCAST
+  FILES:=$(LINUX_DIR)/drivers/net/team/team_mode_broadcast.ko
+  AUTOLOAD:=$(call AutoProbe,team_mode_broadcast)
+endef
+
+$(eval $(call KernelPackage,team-mode-broadcast))
+
+define KernelPackage/team-mode-roundrobin
+  SUBMENU:=$(NETWORK_SUPPORT_MENU)
+  TITLE:=Round-robin mode support
+  DEPENDS:=kmod-team
+  KCONFIG:=CONFIG_NET_TEAM_MODE_ROUNDROBIN
+  FILES:=$(LINUX_DIR)/drivers/net/team/team_mode_roundrobin.ko
+  AUTOLOAD:=$(call AutoProbe,team_mode_roundrobin)
+endef
+
+$(eval $(call KernelPackage,team-mode-roundrobin))
+
+define KernelPackage/team-mode-random
+  SUBMENU:=$(NETWORK_SUPPORT_MENU)
+  TITLE:=Random mode support
+  DEPENDS:=kmod-team
+  KCONFIG:=CONFIG_NET_TEAM_MODE_RANDOM
+  FILES:=$(LINUX_DIR)/drivers/net/team/team_mode_random.ko
+  AUTOLOAD:=$(call AutoProbe,team_mode_random)
+endef
+
+$(eval $(call KernelPackage,team-mode-random))
+
+define KernelPackage/team-mode-activebackup
+  SUBMENU:=$(NETWORK_SUPPORT_MENU)
+  TITLE:=Active-backup mode support
+  DEPENDS:=kmod-team
+  KCONFIG:=CONFIG_NET_TEAM_MODE_ACTIVEBACKUP
+  FILES:=$(LINUX_DIR)/drivers/net/team/team_mode_activebackup.ko
+  AUTOLOAD:=$(call AutoProbe,team_mode_activebackup)
+endef
+
+$(eval $(call KernelPackage,team-mode-activebackup))
+
+define KernelPackage/team-mode-loadbalance
+  SUBMENU:=$(NETWORK_SUPPORT_MENU)
+  TITLE:=Load-balance mode support
+  DEPENDS:=kmod-team
+  KCONFIG:=CONFIG_NET_TEAM_MODE_LOADBALANCE
+  FILES:=$(LINUX_DIR)/drivers/net/team/team_mode_loadbalance.ko
+  AUTOLOAD:=$(call AutoProbe,team_mode_loadbalance)
+endef
+
+$(eval $(call KernelPackage,team-mode-loadbalance))
